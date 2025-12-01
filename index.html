@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Project Collector - Современные сборщики проектов</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Базовые стили */
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --gradient: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 10px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            -webkit-text-size-adjust: 100%;
+            font-size: 14px;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.4;
+            color: var(--dark);
+            background-color: var(--light);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+        
+        /* Навигация */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 8px 0;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .logo i {
+            margin-right: 6px;
+            font-size: 1.1rem;
+        }
+        
+        .mobile-toggle {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--dark);
+            cursor: pointer;
+            padding: 6px;
+        }
+        
+        .nav-links {
+            display: none;
+            position: fixed;
+            top: 50px;
+            left: 0;
+            width: 100%;
+            background: white;
+            flex-direction: column;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+        }
+        
+        .nav-links.active {
+            display: flex;
+        }
+        
+        .nav-links li {
+            list-style: none;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .nav-links a {
+            display: block;
+            padding: 10px 0;
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        /* Герой секция */
+        .hero {
+            padding: 80px 0 40px;
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .hero h1 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+        
+        .hero p {
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            opacity: 0.95;
+            line-height: 1.4;
+            padding: 0 5px;
+        }
+        
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 260px;
+            margin: 0 auto;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+        }
+        
+        /* Секции */
+        section {
+            padding: 40px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .section-header h2 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: var(--dark);
+            line-height: 1.3;
+        }
+        
+        .section-header p {
+            font-size: 0.85rem;
+            color: var(--gray);
+            line-height: 1.4;
+            padding: 0 10px;
+        }
+        
+        /* Карточки инструментов */
+        .tools-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .tool-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+        
+        .tool-header {
+            padding: 15px 15px 10px;
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+        }
+        
+        .tool-header h3 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .tool-header p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        .tool-image {
+            height: 50px;
+            width: auto;
+            margin: 0 auto 8px;
+            border-radius: 6px;
+            background: white;
+            padding: 5px;
+            object-fit: contain;
+            display: block;
+            max-width: 90%;
+        }
+        
+        .tool-body {
+            padding: 15px;
+        }
+        
+        .tool-body p {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+        
+        .feature-list li {
+            padding: 6px 0 6px 22px;
+            border-bottom: 1px solid #f1f5f9;
+            position: relative;
+            font-size: 0.82rem;
+            line-height: 1.3;
+        }
+        
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 0.85rem;
+            top: 6px;
+        }
+        
+        /* Таблица сравнения */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+            margin: 15px 0 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 0.8rem;
+            min-width: 400px;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+        
+        .comparison-table th {
+            background: var(--gradient);
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        
+        .badge-green {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .badge-yellow {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .badge-red {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        /* Галерея изображений */
+        .images-gallery {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .gallery-item {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .gallery-caption {
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .gallery-caption h4 {
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+            color: var(--dark);
+        }
+        
+        .gallery-caption p {
+            color: var(--gray);
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+        
+        /* Секция с описанием инструментов */
+        .tool-description {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 25px 0;
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+        
+        .tool-description-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .tool-description-image {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: white;
+            padding: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tool-description-content h3 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .tool-description-content p {
+            color: var(--gray);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .content-image {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius);
+            margin: 15px 0;
+            display: block;
+            box-shadow: var(--shadow);
+        }
+        
+        .image-caption {
+            text-align: center;
+            color: var(--gray);
+            font-style: italic;
+            margin: 5px 0 15px;
+            font-size: 0.8rem;
+        }
+        
+        .tool-features {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .tool-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .tool-feature i {
+            color: var(--secondary);
+            font-size: 1rem;
+            margin-top: 2px;
+        }
+        
+        .tool-feature-content h4 {
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            color: var(--dark);
+        }
+        
+        .tool-feature-content p {
+            color: var(--gray);
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+        
+        /* Секция видео-туториалов */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .video-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+        
+        .video-thumbnail {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+        
+        .video-thumbnail iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .video-info {
+            padding: 15px;
+        }
+        
+        .video-info h4 {
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            color: var(--dark);
+            line-height: 1.3;
+        }
+        
+        .video-info p {
+            color: var(--gray);
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+        
+        .video-duration {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 3px 7px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        /* Секция дополнительных инструментов */
+        .additional-tools {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .additional-card {
+            background: white;
+            padding: 18px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+        }
+        
+        .additional-card h4 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .additional-card p {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+        
+        /* Сайдбар */
+        .grid-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            background: white;
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+        
+        .sidebar h3 {
+            margin-bottom: 12px;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        
+        .sidebar p {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            color: var(--gray);
+        }
+        
+        .sidebar-list {
+            list-style: none;
+        }
+        
+        .sidebar-list li {
+            margin-bottom: 6px;
+        }
+        
+        .sidebar-list a {
+            color: var(--dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            padding: 5px 0;
+        }
+        
+        .sidebar-list i {
+            margin-right: 8px;
+            color: var(--primary);
+            font-size: 0.8rem;
+        }
+        
+        /* Форма подписки */
+        .subscribe-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .subscribe-form input {
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 25px;
+            outline: none;
+            font-family: inherit;
+            font-size: 0.85rem;
+            width: 100%;
+        }
+        
+        .subscribe-form button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.85rem;
+            width: 100%;
+        }
+        
+        /* Футер */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 40px 0 0;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h4 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+        
+        .footer-column p {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 6px;
+        }
+        
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+        
+        .contact-info {
+            list-style: none;
+        }
+        
+        .contact-info li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+        
+        .contact-info i {
+            margin-right: 8px;
+            color: var(--primary);
+            margin-top: 1px;
+        }
+        
+        .social-links {
+            display: flex;
+            margin-top: 12px;
+            gap: 8px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #334155;
+            padding: 15px 0;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+        
+        .footer-links-bottom {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .footer-links-bottom a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+        
+        /* Десктопная версия */
+        @media (min-width: 768px) {
+            html, body {
+                font-size: 16px;
+            }
+            
+            .container {
+                padding: 0 20px;
+            }
+            
+            .navbar {
+                padding: 12px 0;
+            }
+            
+            .mobile-toggle {
+                display: none;
+            }
+            
+            .nav-links {
+                display: flex;
+                position: static;
+                flex-direction: row;
+                background: none;
+                box-shadow: none;
+                padding: 0;
+                width: auto;
+            }
+            
+            .nav-links li {
+                border: none;
+                margin-left: 20px;
+            }
+            
+            .nav-links a {
+                padding: 5px 0;
+                font-size: 0.95rem;
+            }
+            
+            .hero {
+                padding: 120px 0 60px;
+                margin-top: 60px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+                max-width: 700px;
+                margin: 0 auto 30px;
+            }
+            
+            .btn-container {
+                flex-direction: row;
+                max-width: none;
+                gap: 15px;
+            }
+            
+            .btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            
+            section {
+                padding: 60px 0;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .section-header p {
+                font-size: 1.1rem;
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            
+            .tools-grid {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            
+            .tool-card {
+                flex: 1;
+                min-width: 300px;
+            }
+            
+            .tool-description-header {
+                flex-direction: row;
+                text-align: left;
+            }
+            
+            .tool-description-image {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .tool-features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .content-image {
+                max-width: 600px;
+                margin: 20px auto;
+            }
+            
+            .grid-container {
+                flex-direction: row;
+                gap: 30px;
+            }
+            
+            .grid-container main {
+                flex: 2;
+            }
+            
+            .grid-container aside {
+                flex: 1;
+                max-width: 300px;
+            }
+            
+            .images-gallery {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .videos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .additional-tools {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-content {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .footer-column {
+                flex: 1;
+                min-width: 200px;
+            }
+        }
+        
+        /* Мелкие экраны */
+        @media (max-width: 360px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .hero h1 {
+                font-size: 1.2rem;
+            }
+            
+            .hero p {
+                font-size: 0.8rem;
+            }
+            
+            .section-header h2 {
+                font-size: 1.1rem;
+            }
+            
+            .section-header p {
+                font-size: 0.8rem;
+            }
+            
+            .btn {
+                padding: 9px 16px;
+                font-size: 0.8rem;
+            }
+            
+            .comparison-table {
+                min-width: 350px;
+                font-size: 0.75rem;
+            }
+            
+            .comparison-table th, .comparison-table td {
+                padding: 8px 10px;
+            }
+            
+            .gallery-image {
+                height: 120px;
+            }
+            
+            .video-info h4 {
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Ховеры только на десктопе */
+        @media (hover: hover) {
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            }
+            
+            .nav-links a:hover {
+                color: var(--primary);
+            }
+            
+            .sidebar-list a:hover {
+                color: var(--primary);
+            }
+            
+            .footer-links a:hover {
+                color: white;
+            }
+            
+            .social-links a:hover {
+                background: var(--primary);
+                transform: translateY(-2px);
+            }
+            
+            .tool-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+            }
+            
+            .video-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+            }
+            
+            .gallery-item:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-cubes"></i>
+                Project Collector
+            </a>
+            
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars" id="toggleIcon"></i>
+            </button>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" class="active">Главная</a></li>
+                <li><a href="#tools">Инструменты</a></li>
+                <li><a href="#comparison">Сравнение</a></li>
+                <li><a href="#gallery">Галерея</a></li>
+                <li><a href="#video-tutorials">Видео</a></li>
+                <li><a href="#additional">Другие</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Герой секция -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Современные сборщики фронтенд-проектов</h1>
+            <p>Изучите мощные инструменты для автоматизации вашей разработки: Webpack, Vite и Gulp.</p>
+            <div class="btn-container">
+                <a href="#tools" class="btn">Инструменты</a>
+                <a href="#gallery" class="btn btn-outline">Галерея</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <div class="grid-container">
+            <main>
+                <!-- Секция инструментов -->
+                <section id="tools">
+                    <div class="section-header">
+                        <h2>Популярные сборщики проектов</h2>
+                        <p>В современной веб-разработке сборщики проектов играют ключевую роль, автоматизируя процессы сборки, минификации и оптимизации ресурсов.</p>
+                    </div>
+                    
+                    <div class="tools-grid">
+                        <!-- Webpack Card -->
+                        <article class="tool-card">
+                            <div class="tool-header">
+                                <img src="https://squashapps.com/wp-content/uploads/2019/07/webpack.webp" alt="Webpack Logo" class="tool-image">
+                                <h3>Webpack</h3>
+                                <p>Мощный сборщик модулей</p>
+                            </div>
+                            <div class="tool-body">
+                                <p><strong>Webpack</strong> — мощный сборщик модулей, стандарт в индустрии.</p>
+                                <ul class="feature-list">
+                                    <li>Плагины и лоадеры</li>
+                                    <li>Горячая замена (HMR)</li>
+                                    <li>Разделение кода</li>
+                                    <li>Tree Shaking</li>
+                                    <li>Разные ассеты</li>
+                                </ul>
+                                <a href="#video-tutorials" class="btn full-width">Подробнее</a>
+                            </div>
+                        </article>
+                        
+                        <!-- Vite Card -->
+                        <article class="tool-card">
+                            <div class="tool-header">
+                                <img src="https://www.axelerant.com/hubfs/Vite_Vs_Webpack_The_%20Best_Bundler_For%20React_Applications.png" alt="Vite Logo" class="tool-image">
+                                <h3>Vite</h3>
+                                <p>Быстрый сборщик</p>
+                            </div>
+                            <div class="tool-body">
+                                <p><strong>Vite</strong> — современный быстрый сборщик.</p>
+                                <ul class="feature-list">
+                                    <li>Мгновенный запуск</li>
+                                    <li>Быстрая HMR</li>
+                                    <li>Оптимизация</li>
+                                    <li>Простая настройка</li>
+                                    <li>TypeScript</li>
+                                </ul>
+                                <a href="#video-tutorials" class="btn full-width">Подробнее</a>
+                            </div>
+                        </article>
+                        
+                        <!-- Gulp Card -->
+                        <article class="tool-card">
+                            <div class="tool-header">
+                                <img src="https://raw.githubusercontent.com/dperrymorrow/gulp-task-generator/master/gulp_generator_logo.png" alt="Gulp Logo" class="tool-image">
+                                <h3>Gulp</h3>
+                                <p>Таск-раннер</p>
+                            </div>
+                            <div class="tool-body">
+                                <p><strong>Gulp</strong> — автоматизация процессов.</p>
+                                <ul class="feature-list">
+                                    <li>Потоковая обработка</li>
+                                    <li>Простой API</li>
+                                    <li>Много плагинов</li>
+                                    <li>Гибкость</li>
+                                    <li>Автоматизация</li>
+                                </ul>
+                                <a href="#video-tutorials" class="btn full-width">Подробнее</a>
+                            </div>
+                        </article>
+                    </div>
+                    
+                    <!-- Описание Webpack -->
+                    <div class="tool-description">
+                        <div class="tool-description-header">
+                            <img src="https://squashapps.com/wp-content/uploads/2019/07/webpack.webp" alt="Webpack" class="tool-description-image">
+                            <div class="tool-description-content">
+                                <h3>Webpack - Мощный сборщик модулей</h3>
+                                <p>Webpack стал индустриальным стандартом для сборки сложных веб-приложений.</p>
+                            </div>
+                        </div>
+                        
+                        <img src="https://bs-uploads.toptal.io/blackfish-uploads/components/open_graph_image/8958764/og_image/optimized/0809_WebpackBrowserifyGulp_Dan_Social-5cb6a354acafab2a4b0547b63dd36cbf.png" alt="Сравнение Webpack, Browserify и Gulp" class="content-image">
+                        <p class="image-caption">Сравнение архитектуры Webpack, Browserify и Gulp</p>
+                        
+                        <div class="tool-features">
+                            <div class="tool-feature">
+                                <i class="fas fa-plug"></i>
+                                <div class="tool-feature-content">
+                                    <h4>Богатая экосистема</h4>
+                                    <p>Тысячи плагинов для любых задач</p>
+                                </div>
+                            </div>
+                            <div class="tool-feature">
+                                <i class="fas fa-code-branch"></i>
+                                <div class="tool-feature-content">
+                                    <h4>Разделение кода</h4>
+                                    <p>Оптимизация загрузки</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Описание Vite -->
+                    <div class="tool-description">
+                        <div class="tool-description-header">
+                            <img src="https://www.axelerant.com/hubfs/Vite_Vs_Webpack_The_%20Best_Bundler_For%20React_Applications.png" alt="Vite" class="tool-description-image">
+                            <div class="tool-description-content">
+                                <h3>Vite - Молниеносная разработка</h3>
+                                <p>Vite переосмысливает подход к разработке.</p>
+                            </div>
+                        </div>
+                        
+                        <img src="https://repository-images.githubusercontent.com/438662643/5bb572ca-6f09-4bfa-801d-08e8d880ae54" alt="ViteJS" class="content-image">
+                        <p class="image-caption">ViteJS - next generation frontend tooling</p>
+                        
+                        <div class="tool-features">
+                            <div class="tool-feature">
+                                <i class="fas fa-bolt"></i>
+                                <div class="tool-feature-content">
+                                    <h4>Мгновенный запуск</h4>
+                                    <p>Сервер запускается за секунды</p>
+                                </div>
+                            </div>
+                            <div class="tool-feature">
+                                <i class="fas fa-rocket"></i>
+                                <div class="tool-feature-content">
+                                    <h4>Быстрая HMR</h4>
+                                    <p>Горячая перезагрузка</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Описание Gulp -->
+                    <div class="tool-description">
+                        <div class="tool-description-header">
+                            <img src="https://raw.githubusercontent.com/dperrymorrow/gulp-task-generator/master/gulp_generator_logo.png" alt="Gulp" class="tool-description-image">
+                            <div class="tool-description-content">
+                                <h3>Gulp - Автоматизация процессов</h3>
+                                <p>Gulp фокусируется на автоматизации рутинных задач.</p>
+                            </div>
+                        </div>
+                        
+                        <img src="https://bs-uploads.toptal.io/blackfish-uploads/components/open_graph_image/8958764/og_image/optimized/0809_WebpackBrowserifyGulp_Dan_Social-5cb6a354acafab2a4b0547b63dd36cbf.png" alt="Сравнение инструментов" class="content-image">
+                        <p class="image-caption">Сравнение подходов инструментов сборки</p>
+                        
+                        <div class="tool-features">
+                            <div class="tool-feature">
+                                <i class="fas fa-stream"></i>
+                                <div class="tool-feature-content">
+                                    <h4>Потоковая обработка</h4>
+                                    <p>Эффективная обработка файлов</p>
+                                </div>
+                            </div>
+                            <div class="tool-feature">
+                                <i class="fas fa-tasks"></i>
+                                <div class="tool-feature-content">
+                                    <h4>Простой API</h4>
+                                    <p>Интуитивно понятный</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Секция сравнения -->
+                <section id="comparison">
+                    <div class="section-header">
+                        <h2>Сравнение сборщиков</h2>
+                        <p>Выбор подходящего сборщика зависит от требований проекта.</p>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Характеристика</th>
+                                    <th>Webpack</th>
+                                    <th>Vite</th>
+                                    <th>Gulp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Dev скорость</th>
+                                    <td><span class="badge badge-yellow">Средняя</span></td>
+                                    <td><span class="badge badge-green">Высокая</span></td>
+                                    <td><span class="badge badge-green">Высокая</span></td>
+                                </tr>
+                                <tr>
+                                    <th>Prod скорость</th>
+                                    <td><span class="badge badge-green">Высокая</span></td>
+                                    <td><span class="badge badge-green">Очень</span></td>
+                                    <td><span class="badge badge-yellow">Зависит</span></td>
+                                </tr>
+                                <tr>
+                                    <th>Настройка</th>
+                                    <td><span class="badge badge-red">Сложно</span></td>
+                                    <td><span class="badge badge-green">Просто</span></td>
+                                    <td><span class="badge badge-yellow">Средне</span></td>
+                                </tr>
+                                <tr>
+                                    <th>HMR</th>
+                                    <td><span class="badge badge-green">Есть</span></td>
+                                    <td><span class="badge badge-green">Мгнов.</span></td>
+                                    <td><span class="badge badge-red">Плагины</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Секция галереи -->
+                <section id="gallery">
+                    <div class="section-header">
+                        <h2>Галерея инструментов сборки</h2>
+                        <p>Визуальное представление популярных инструментов сборки.</p>
+                    </div>
+                    
+                    <div class="images-gallery">
+                        <div class="gallery-item">
+                            <img src="https://squashapps.com/wp-content/uploads/2019/07/webpack.webp" alt="Webpack - мощный сборщик модулей" class="gallery-image">
+                            <div class="gallery-caption">
+                                <h4>Webpack</h4>
+                                <p>Мощный сборщик модулей</p>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item">
+                            <img src="https://www.axelerant.com/hubfs/Vite_Vs_Webpack_The_%20Best_Bundler_For%20React_Applications.png" alt="Vite - современный быстрый сборщик" class="gallery-image">
+                            <div class="gallery-caption">
+                                <h4>Vite</h4>
+                                <p>Современный быстрый сборщик</p>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item">
+                            <img src="https://raw.githubusercontent.com/dperrymorrow/gulp-task-generator/master/gulp_generator_logo.png" alt="Gulp - потоковый сборщик задач" class="gallery-image">
+                            <div class="gallery-caption">
+                                <h4>Gulp</h4>
+                                <p>Потоковый сборщик задач</p>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item">
+                            <img src="https://bs-uploads.toptal.io/blackfish-uploads/components/open_graph_image/8958764/og_image/optimized/0809_WebpackBrowserifyGulp_Dan_Social-5cb6a354acafab2a4b0547b63dd36cbf.png" alt="Сравнение Webpack, Browserify и Gulp" class="gallery-image">
+                            <div class="gallery-caption">
+                                <h4>Сравнение</h4>
+                                <p>Webpack, Browserify и Gulp</p>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-item">
+                            <img src="https://repository-images.githubusercontent.com/438662643/5bb572ca-6f09-4bfa-801d-08e8d880ae54" alt="Vitejs - next generation frontend tooling" class="gallery-image">
+                            <div class="gallery-caption">
+                                <h4>ViteJS</h4>
+                                <p>Next generation tooling</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Секция видео-туториалов -->
+                <section id="video-tutorials">
+                    <div class="section-header">
+                        <h2>Видео-туториалы</h2>
+                        <p>Практические видео-уроки по современным инструментам сборки.</p>
+                    </div>
+                    
+                    <div class="videos-grid">
+                        <!-- Видео 1 -->
+                        <article class="video-card">
+                            <div class="video-thumbnail">
+                                <iframe src="https://rutube.ru/play/embed/5210f69e21a329f29f959fdba9229618" 
+                                        title="Webpack для начинающих"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                            <div class="video-info">
+                                <h4>Webpack для начинающих</h4>
+                                <p>Освойте основы Webpack с нуля. Настройка конфигурации и создание сборки.</p>
+                                <span class="video-duration">25 мин</span>
+                            </div>
+                        </article>
+                        
+                        <!-- Видео 2 -->
+                        <article class="video-card">
+                            <div class="video-thumbnail">
+                                <iframe src="https://rutube.ru/play/embed/9e21fbd52ea287ae02e9a245e01f9951" 
+                                        title="Vite: Мгновенная разработка"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                            <div class="video-info">
+                                <h4>Vite: Мгновенная разработка</h4>
+                                <p>Узнайте, как использовать Vite для быстрой разработки веб-приложений.</p>
+                                <span class="video-duration">18 мин</span>
+                            </div>
+                        </article>
+                        
+                        <!-- Видео 3 -->
+                        <article class="video-card">
+                            <div class="video-thumbnail">
+                                <iframe src="https://rutube.ru/play/embed/3b4fa6ee81f53d9d79c3e5a7effc7002" 
+                                        title="Gulp - автоматизация рабочих процессов"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                            <div class="video-info">
+                                <h4>Gulp - автоматизация</h4>
+                                <p>Научитесь автоматизировать рутинные задачи с помощью Gulp.</p>
+                                <span class="video-duration">22 мин</span>
+                            </div>
+                        </article>
+                        
+                        <!-- Видео 4 -->
+                        <article class="video-card">
+                            <div class="video-thumbnail">
+                                <iframe src="https://rutube.ru/play/embed/6754c9fca6f2930733e3598384c55414" 
+                                        title="Оптимизация сборки Webpack"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                            <div class="video-info">
+                                <h4>Оптимизация Webpack</h4>
+                                <p>Продвинутые техники оптимизации сборки Webpack.</p>
+                                <span class="video-duration">35 мин</span>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+                
+                <!-- Секция дополнительных инструментов -->
+                <section id="additional">
+                    <div class="section-header">
+                        <h2>Другие инструменты сборки</h2>
+                        <p>Помимо трех основных сборщиков, существуют и другие инструменты.</p>
+                    </div>
+                    
+                    <div class="additional-tools">
+                        <article class="additional-card">
+                            <h4>Parcel</h4>
+                            <p><strong>Parcel</strong> — сборщик с нулевой конфигурацией, который работает из коробки.</p>
+                            <ul class="feature-list">
+                                <li>Нулевая конфигурация</li>
+                                <li>Быстрая сборка</li>
+                                <li>Встроенная поддержка</li>
+                            </ul>
+                        </article>
+                        
+                        <article class="additional-card">
+                            <h4>Rollup</h4>
+                            <p><strong>Rollup</strong> — сборщик модулей, ориентированный на создание библиотек.</p>
+                            <ul class="feature-list">
+                                <li>Оптимизация для библиотек</li>
+                                <li>Эффективное дерево шейкинг</li>
+                                <li>Компактные бандлы</li>
+                            </ul>
+                        </article>
+                        
+                        <article class="additional-card">
+                            <h4>Snowpack</h4>
+                            <p><strong>Snowpack</strong> — современный сборщик, который использует ESM-модули.</p>
+                            <ul class="feature-list">
+                                <li>Быстрая разработка с ESM</li>
+                                <li>Минимальная настройка</li>
+                                <li>Оптимизирован</li>
+                            </ul>
+                        </article>
+                        
+                        <article class="additional-card">
+                            <h4>Esbuild</h4>
+                            <p><strong>Esbuild</strong> — невероятно быстрый сборщик JavaScript, написанный на Go.</p>
+                            <ul class="feature-list">
+                                <li>Экстремальная скорость</li>
+                                <li>Написан на Go</li>
+                                <li>Минималистичный</li>
+                            </ul>
+                        </article>
+                    </div>
+                </section>
+            </main>
+            
+            <!-- Сайдбар -->
+            <aside>
+                <div class="sidebar">
+                    <h3>Подписка</h3>
+                    <p>Новости о сборщиках проектов</p>
+                    <form class="subscribe-form">
+                        <input type="email" placeholder="Email" required>
+                        <button type="submit">Подписаться</button>
+                    </form>
+                </div>
+                
+                <div class="sidebar">
+                    <h3>Навигация</h3>
+                    <ul class="sidebar-list">
+                        <li><a href="#tools"><i class="fas fa-code"></i> Инструменты</a></li>
+                        <li><a href="#comparison"><i class="fas fa-chart-bar"></i> Сравнение</a></li>
+                        <li><a href="#gallery"><i class="fas fa-images"></i> Галерея</a></li>
+                        <li><a href="#video-tutorials"><i class="fas fa-video"></i> Видео</a></li>
+                        <li><a href="#additional"><i class="fas fa-tools"></i> Другие</a></li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar">
+                    <h3>Популярные видео</h3>
+                    <ul class="sidebar-list">
+                        <li><a href="#video-tutorials"><i class="fas fa-play-circle"></i> Webpack для новичков</a></li>
+                        <li><a href="#video-tutorials"><i class="fas fa-play-circle"></i> Vite разработка</a></li>
+                        <li><a href="#video-tutorials"><i class="fas fa-play-circle"></i> Gulp автоматизация</a></li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>Project Collector</h4>
+                    <p>Ваш гид в мире современных инструментов сборки фронтенд-проектов.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Контакты</h4>
+                    <address>
+                        <ul class="contact-info">
+                            <li>
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>г. Сыктывкар, ул. Ленина 39</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-envelope"></i>
+                                <span>project.collector@inbox.ru</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-phone"></i>
+                                <span>8 (800) 123-45-67</span>
+                            </li>
+                        </ul>
+                    </address>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <ul class="footer-links-bottom">
+                    <li><a href="#">Условия</a></li>
+                    <li><a href="#">Политика</a></li>
+                    <li><a href="#">Cookie</a></li>
+                </ul>
+                <p>© 2025 Project Collector. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Мобильное меню
+            const mobileToggle = document.getElementById('mobileToggle');
+            const navLinks = document.getElementById('navLinks');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                    toggleIcon.classList.toggle('fa-bars');
+                    toggleIcon.classList.toggle('fa-times');
+                    
+                    if (navLinks.classList.contains('active')) {
+                        document.body.style.overflow = 'hidden';
+                    } else {
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+            
+            // Закрытие меню при клике на ссылку
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 768) {
+                        navLinks.classList.remove('active');
+                        toggleIcon.classList.remove('fa-times');
+                        toggleIcon.classList.add('fa-bars');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+            
+            // Плавная прокрутка
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#') return;
+                    
+                    const targetElement = document.querySelector(href);
+                    if (targetElement) {
+                        e.preventDefault();
+                        const offset = 60;
+                        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
+                        
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Подписка
+            const subscribeForm = document.querySelector('.subscribe-form');
+            if (subscribeForm) {
+                subscribeForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = this.querySelector('input[type="email"]').value;
+                    if (email.includes('@')) {
+                        alert('Спасибо за подписку!');
+                        this.reset();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
